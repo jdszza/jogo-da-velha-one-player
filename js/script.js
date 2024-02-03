@@ -5,20 +5,68 @@ let gameActive = true;
 function handleClick(index) {
   if (gameBoard[index] === "" && gameActive) {
     gameBoard[index] = currentPlayer;
-    document.getElementsByClassName("cell")[index].innerText = currentPlayer;
+    function reiniciarJogo() {
+      // Limpar o tabuleiro e a mensagem
+      gameBoard = ["", "", "", "", "", "", "", "", ""];
+      document.getElementById("message").innerText = "";
+    
+      // Reiniciar as células no tabuleiro
+      const cells = document.getElementsByClassName("cell");
+      for (let i = 0; i < cells.length; i++) {
+        cells[i].innerText = "";
+      }
+    
+      // Reiniciar variáveis de controle
+      gameActive = true;
+      currentPlayer = "X";
+    }    updateCell(index);
 
     if (checkWinner()) {
-      document.getElementById(
-        "message"
-      ).innerText = `Player ${currentPlayer} venceu!`;
+      displayMessage(`Player ${currentPlayer} venceu!`);
       gameActive = false;
     } else if (gameBoard.every((cell) => cell !== "")) {
-      document.getElementById("message").innerText = "Empate!";
+      displayMessage("Empate!");
       gameActive = false;
     } else {
       currentPlayer = currentPlayer === "X" ? "O" : "X";
+      // Adiciona uma pequena pausa antes de o bot jogar
+      setTimeout(() => {
+        botMove();
+      }, 500);
     }
   }
+}
+
+function botMove() {
+  // Implemente a lógica do bot aqui
+  // Aqui, estou usando uma abordagem simples onde o bot joga na primeira célula vazia disponível
+
+  for (let i = 0; i < gameBoard.length; i++) {
+    if (gameBoard[i] === "") {
+      gameBoard[i] = currentPlayer;
+      updateCell(i);
+
+      if (checkWinner()) {
+        displayMessage(`Bot venceu!`);
+        gameActive = false;
+      } else if (gameBoard.every((cell) => cell !== "")) {
+        displayMessage("Empate!");
+        gameActive = false;
+      } else {
+        currentPlayer = currentPlayer === "X" ? "O" : "X";
+      }
+
+      return;
+    }
+  }
+}
+
+function updateCell(index) {
+  document.getElementsByClassName("cell")[index].innerText = currentPlayer;
+}
+
+function displayMessage(message) {
+  document.getElementById("message").innerText = message;
 }
 
 function checkWinner() {
@@ -41,20 +89,20 @@ function checkWinner() {
       gameBoard[b] === gameBoard[c]
     );
   });
+
 }
-
 function reiniciarJogo() {
-    // Limpar o tabuleiro e a mensagem
-    gameBoard = ["", "", "", "", "", "", "", "", ""];
-    document.getElementById("message").innerText = "";
+  // Limpar o tabuleiro e a mensagem
+  gameBoard = ["", "", "", "", "", "", "", "", ""];
+  document.getElementById("message").innerText = "";
 
-    // Reiniciar as células no tabuleiro
-    const cells = document.getElementsByClassName("cell");
-    for (let i = 0; i < cells.length; i++) {
-      cells[i].innerText = "";
-    }
-
-    // Reiniciar variáveis de controle
-    gameActive = true;
-    currentPlayer = "X";
+  // Reiniciar as células no tabuleiro
+  const cells = document.getElementsByClassName("cell");
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].innerText = "";
   }
+
+  // Reiniciar variáveis de controle
+  gameActive = true;
+  currentPlayer = "X";
+}
